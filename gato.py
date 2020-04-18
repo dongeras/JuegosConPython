@@ -37,21 +37,21 @@ def jugada(tablero, pos, letraTurno):# Actualiza el tablero dada una jugada
     
 def tableroganador(tablero, le): #Devuelve True si el jugador le tiene un tablero ganador
 
-    return { tablero[7] == le and tablero[8] == le and tablero[9] == le or
+    return ((tablero[7] == le and tablero[8] == le and tablero[9] == le) or
             
-             tablero[4] == le and tablero[5] == le and tablero[6] == le or
+             (tablero[4] == le and tablero[5] == le and tablero[6] == le) or
              
-             tablero[1] == le and tablero[2] == le and tablero[3] == le or
+             (tablero[1] == le and tablero[2] == le and tablero[3] == le) or
              
-             tablero[7] == le and tablero[4] == le and tablero[1] == le or
+             (tablero[7] == le and tablero[4] == le and tablero[1] == le) or
              
-             tablero[8] == le and tablero[5] == le and tablero[2] == le or
+             (tablero[8] == le and tablero[5] == le and tablero[2] == le) or
              
-             tablero[9] == le and tablero[6] == le and tablero[3] == le or 
+             (tablero[9] == le and tablero[6] == le and tablero[3] == le) or 
              
-             tablero[7] == le and tablero[5] == le and tablero[3] == le or 
+             (tablero[7] == le and tablero[5] == le and tablero[3] == le) or 
              
-             tablero[9] == le and tablero[5] == le and tablero[1] == le }
+             (tablero[9] == le and tablero[5] == le and tablero[1] == le))
     
     
 def empate(tablero): #Evalúa si hay un empate
@@ -65,23 +65,136 @@ def empate(tablero): #Evalúa si hay un empate
 def duplicandoTablero(tablero):
     
     tableroDup = []
-    
+      
     for i in tablero:
         tableroDup.append(i)
     
     return tableroDup 
 
+def espacioVacio(tablero, pos): #Regresa Verdadero si el espacio está vacío
+
+    return tablero[pos] == ' '
+
+def movimientoUsuario(tablero, letraUsuario):
+    
+    movimiento = ''
+    
+    while movimiento not in '1 2 3 4 5 6 7 8 9'.split() or not espacioVacio(tablero, int(movimiento)):
+        print('¿Cuál es tu movimento? (1, 2, 3, 4, 5, 6, 7, 8, 9)')
+        movimiento = input()
         
+    tablero[int(movimiento)] = letraUsuario
+    
+def jugadaAzar(tablero, listaPosiciones):
+    
+    posiblesSitios = []
+    
+    for i in listaPosiciones:
+        if espacioVacio(tablero, i):
+            posiblesSitios.append(i)
+            
+    if len(posiblesSitios) !=0:
+        return random.choice(posiblesSitios)
+    else:
+        return None
+    
+    #La siguiente función regresa la jugada de la PC
+def jugadaComputadora(tablero, letraPC, letraUsuario):
+    
+    espaciosVacios = []
+    
+    #1.- ¿Hay jugada ganadora?
+    for j in range(1, len(tablero)):
+        if tablero[j] == ' ':
+            espaciosVacios.append(j)
+    
+    
+    
+    for i in espaciosVacios:
+        copiaTablero = duplicandoTablero(tablero)
+        jugada(copiaTablero, i, letraPC)
+        if tableroganador(copiaTablero, letraPC):
+            return i
+        
+    #2.- Bloquear jugadas ganadoras del contrario    
+    for i in espaciosVacios:
+        copiaTablero = duplicandoTablero(tablero)
+        jugada(copiaTablero, i, letraUsuario)
+        if tableroganador(copiaTablero, letraUsuario):
+            return i
+    
+    # 3.- Tratar de jugar en una esquina
+    listaEsquinas = [1, 3, 5, 9]
+    movimiento = jugadaAzar(tablero, listaEsquinas)
+    
+    if movimiento != None:
+        return movimiento
+    
+    # 4.- Tratar de jugar en el centro
+    if espacioVacio(tablero, 5):
+        return 5
+    
+    # 5. Elegir entre los lados
+    
+    listaLados = [2, 4, 6, 8]
+    return jugadaAzar(tablero, listaLados)
+
+
+  
+        
+        
+        
+        
+        
+    
 
     
     
+print('¡Bienvenido al Gato!')
 
-
-#letraJugador, letraCom = preguntarLetra()
-
-#primerTurn = volado(letraJugador, letraCom)
-
+letraJugador, letraCom = preguntarLetra()
+primerTurn = volado(letraJugador, letraCom)
 tab = [' '] * 10
 
+if primerTurn == letraJugador:
+    turno = 'El Usuario'
+else:
+    turno = 'La Computadora'
+    
+print( turno + ' tirará primero.' )
+
+juegoEnCurso = True
+
+while juegoEnCurso:
+    if turno == 'El Usuario':
+        muestraTablero(tab)
+        
+        movimientoUsuario(tab, letraJugador)
+        
+        if tableroganador(tab, letraJugador):
+            print('¡Ganaste!')
+            juegoEnCurso = False
+            
+        if empate(tab):
+            juegoEnCurso = False
+        
+        turno = 'La Computadora'
+    if turno == 'La Computadora':
+        
+       jugadaPC = jugadaComputadora(tab, letraCom, letraJugador)
+        
+       jugada(tab, jugadaPC, letraCom)
+       
+       if tableroganador(tab, letraCom):
+            print('¡Perdiste!')
+            juegoEnCurso = False
+    
+       if empate(tab):
+           juegoEnCurso = False
+     
+       turno = 'El Usuario'
+       
+    
+       
 
 
