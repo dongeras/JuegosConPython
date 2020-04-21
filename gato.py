@@ -124,7 +124,7 @@ def jugadaComputadora(tablero, letraPC, letraUsuario):
             return i
     
     # 3.- Tratar de jugar en una esquina
-    listaEsquinas = [1, 3, 5, 9]
+    listaEsquinas = [1, 3, 7, 9]
     movimiento = jugadaAzar(tablero, listaEsquinas)
     
     if movimiento != None:
@@ -146,53 +146,59 @@ def jugadaComputadora(tablero, letraPC, letraUsuario):
         
         
         
-    
+volverAJugar = True
 
-    
-    
-print('¡Bienvenido al Gato!')
+while volverAJugar:    
+    print('¡Bienvenido al Gato!')
 
-letraJugador, letraCom = preguntarLetra()
-primerTurn = volado(letraJugador, letraCom)
-tab = [' '] * 10
+    letraJugador, letraCom = preguntarLetra()
+    primerTurn = volado(letraJugador, letraCom)
+    tab = [' '] * 10
 
-if primerTurn == letraJugador:
-    turno = 'El Usuario'
-else:
-    turno = 'La Computadora'
-    
-print( turno + ' tirará primero.' )
-
-juegoEnCurso = True
-
-while juegoEnCurso:
-    if turno == 'El Usuario':
-        muestraTablero(tab)
-        
-        movimientoUsuario(tab, letraJugador)
-        
-        if tableroganador(tab, letraJugador):
-            print('¡Ganaste!')
-            juegoEnCurso = False
-            
-        if empate(tab):
-            juegoEnCurso = False
-        
+    if primerTurn == letraJugador:
+        turno = 'El Usuario'
+    else:
         turno = 'La Computadora'
-    if turno == 'La Computadora':
-        
-       jugadaPC = jugadaComputadora(tab, letraCom, letraJugador)
-        
-       jugada(tab, jugadaPC, letraCom)
-       
-       if tableroganador(tab, letraCom):
-            print('¡Perdiste!')
-            juegoEnCurso = False
     
-       if empate(tab):
-           juegoEnCurso = False
+    print( turno + ' tirará primero.' )
+
+    juegoEnCurso = True
+
+    while juegoEnCurso:
+        if turno == 'El Usuario':
+            muestraTablero(tab)
+        
+            movimientoUsuario(tab, letraJugador)
+        
+            if tableroganador(tab, letraJugador):
+                print('¡Ganaste!')
+                juegoEnCurso = False
+                break
+            if empate(tab):
+                juegoEnCurso = False
+                break
+        
+            turno = 'La Computadora'
+        
+        if turno == 'La Computadora':
+            jugadaPC = jugadaComputadora(tab, letraCom, letraJugador)
+       
+            if jugadaPC in range(1, 10):
+                jugada(tab, jugadaPC, letraCom)
+       
+            if tableroganador(tab, letraCom):
+                print('¡Perdiste!')
+                juegoEnCurso = False
+                break
+            if empate(tab):
+                juegoEnCurso = False
+                break
      
-       turno = 'El Usuario'
+            turno = 'El Usuario'
+        
+    print('¿quieres volver a jugar? (Sí o No)')
+    volverAJugar = input().lower().startswith('s')
+    
        
     
        
